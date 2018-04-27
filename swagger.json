@@ -1,0 +1,158 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "0.0.3",
+    "title" : "UMS Payment API",
+    "contact" : {
+      "email" : "grigorym@umspay.co"
+    }
+  },
+  "paths" : {
+    "/api/payments/{payment_id}" : {
+      "get" : {
+        "tags" : [ "Payments" ],
+        "summary" : "get payment by id",
+        "description" : "WARNING: still in development.\nBy passing in the appropriate options, you can get payment description for selected order_id.\n",
+        "operationId" : "getPayment",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "X-Merchant-Id",
+          "in" : "header",
+          "description" : "Your merchant id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-Merchant-Key",
+          "in" : "header",
+          "description" : "You merchant key",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "payment_id",
+          "in" : "path",
+          "description" : "Payment ID which were used to process transaction",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Payment fetched",
+            "schema" : {
+              "$ref" : "#/definitions/Payment"
+            }
+          },
+          "400" : {
+            "description" : "bad request"
+          },
+          "401" : {
+            "description" : "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/tokens" : {
+      "post" : {
+        "tags" : [ "Tokens" ],
+        "summary" : "create token for sale",
+        "description" : "Creates token for sale which is active for one hour",
+        "operationId" : "createToken",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "X-Merchant-Id",
+          "in" : "header",
+          "description" : "Your merchant id",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "X-Merchant-Key",
+          "in" : "header",
+          "description" : "You merchant key",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "tokenBody",
+          "description" : "Token to create",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Token"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "got token"
+          },
+          "401" : {
+            "description" : "unauthorized"
+          },
+          "404" : {
+            "description" : "not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Payment" : {
+      "type" : "object",
+      "properties" : {
+        "total_amount_cents" : {
+          "type" : "integer",
+          "example" : 5000
+        },
+        "payment_type" : {
+          "type" : "string",
+          "example" : "card_payment"
+        },
+        "created_at" : {
+          "type" : "object",
+          "example" : "2018-03-05 09:12:12",
+          "properties" : { }
+        },
+        "status" : {
+          "type" : "string",
+          "example" : "approved"
+        },
+        "payment_token_id" : {
+          "type" : "integer",
+          "example" : 5
+        }
+      },
+      "example" : {
+        "total_amount_cents" : 5000,
+        "payment_type" : "card_payment",
+        "payment_token_id" : 5,
+        "created_at" : "2018-03-05 09:12:12",
+        "status" : "approved"
+      }
+    },
+    "Token" : {
+      "type" : "object",
+      "properties" : {
+        "amount_cents": {
+          "type": "integer",
+          "example": 50000
+        },
+        "merchant_return_url": {
+          "type": "string",
+          "example": "http://mystore.com/callback"
+        },
+        "merchant_data": {
+          "type": "string",
+          "example": "item_id: 123"
+        },
+        "order_id": {
+          "type": "integer",
+          "example": "123"
+        }
+      },
+      "example" : {
+        "amount_cents": 5000,
+        "merchant_return_url": "http://mystore.com/callback",
+        "merchant_data": "item_id: 123",
+        "order_id": 123
+      }
+    }
+  }
+}
